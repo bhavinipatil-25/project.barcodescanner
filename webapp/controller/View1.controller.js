@@ -12,52 +12,31 @@ sap.ui.define([
     var oScanResultText;
 
     return Controller.extend("project.barcodescanner.controller.View1", {
-        // onInit() {
-        //     var that = this;
-        //     var oModel = that.getOwnerComponent().getModel('main');
-        //     //  console.log(oModel);
-        //     var oKeys = {
-        //         MATNR: "",
-        //         WERKS: "VC01"
-        //     };
-
-        //     var sPath = "/" + oModel.createKey("Mat_Doc_InfoSet", oKeys);
-        //     oModel.read(sPath, {
-        //         success: function (oData, oResponse) {
-        //             console.log("Data retrieved:", oData);
-        //         },
-        //         error: function (oError) {
-        //             console.error("Error reading data:", oError);
-        //         }
-        //     })
-
-
-        // },
+        onInit() {
+     },
         onScan() {
             var that = this;
             BarcodeScanner.scan(
                 function (mResult) {
                     if (!mResult.cancelled) {
-                        //   console.log(mResult);
                         that.getView().byId("materialNumber").setValue(mResult.text);
-                        var sInput = "5081928085|461815261143|80.000|VC01|1500596561";
-                        var aParts = sInput.split("|");
-                        // Accessing individual parts:
-                        var sID = aParts[0];      // "5081928085"
-                        var sValue = aParts[2];   // "80.000"
-                        var sCode = aParts[3];    // "VC01"
+                       var sInput = mResult.text; 
+                       var aParts = sInput.split("|");
+                        var sID = aParts[0];      
+                        var sValue = aParts[2];   
+                        var sCode = aParts[3];    
                         var oModel = that.getOwnerComponent().getModel('main');
                         var oTable = that.getView().byId("idProductsTable");
                         var oKeys = {
                             MATNR: "",
-                            WERKS: "VC01"
+                            WERKS: sCode
                         };
                         var sPath = "/" + oModel.createKey("Mat_Doc_InfoSet", oKeys);
                         oModel.read(sPath, {
                             success: function (oData, oResponse) {
                                 var aData = [oData];
                                 var oModel = new JSONModel(aData);
-                                console.log(oModel);
+                              //  console.log(oModel);
                                 that.getView().byId("idProductsTable").setModel(oModel, "productModel")
                             },
                             error: function (oError) {

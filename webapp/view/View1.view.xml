@@ -1,0 +1,121 @@
+<mvc:View controllerName="project.barcodescanner.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:ndc="sap.ndc">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <VBox>
+                <Button icon="sap-icon://bar-code" text="Scan" press="onScan" />
+                <Label text="Material" />
+                <Input id="materialNumber" value="" width="500px" />
+            </VBox>
+            <Table id="idProductsTable" items="{productModel>/}" visible="false" mode="SingleSelectMaster"
+                selectionChange="onSelectionChange">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Scanned Items" />
+                        <ToolbarSpacer />
+                        <Button icon=""
+                            text="Post"
+                            type="Emphasized"
+                            press="onPost" />
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="12em">
+                        <header>
+                            <Text text="Purchase Requisition Number" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Requirement Quantity"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Item Number of Purchase Requisition"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Batch Number"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Quantity withdrawn"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Storage Location"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Material Number"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Base Unit of Measure"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Record type"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Number of reservation/dependent requirements"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Plant"
+                                minScreenWidth="Desktop"
+                                demandPopin="true" />
+                        </header>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{productModel>BANFN}" />
+                            <Text text="{productModel>BDMNG}" />
+                            <Text text="{productModel>BNFPO}" />
+                            <Text text="{productModel>CHARG}" />
+                            <Text text="{productModel>ENMNG}" />
+                            <Text text="{productModel>LGORT}" />
+                            <Text text="{productModel>MATNR}" />
+                            <Text text="{productModel>MEINS}" />
+                            <Text text="{productModel>RSART}" />
+                            <Text text="{productModel>RSNUM}" />
+                            <Text text="{productModel>WERKS}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

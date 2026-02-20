@@ -1,117 +1,75 @@
-<mvc:View controllerName="project.barcodescanner.controller.View1"
+<mvc:View
+    height="100%"
+    controllerName="project.barcodescanner.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:ndc="sap.ndc">
-    <Page id="page" title="{i18n>title}">
+    xmlns:l="sap.ui.layout">
+
+    <Page showHeader="false" enableScrolling="true" class="sapUiContentPadding"
+        showNavButton="false">
         <content>
-            <VBox>
+            <l:VerticalLayout class="sapUiContentPadding" width="100%">
                 <Button icon="sap-icon://bar-code" text="Scan" press="onScan" />
                 <Label text="Material" />
-                <Input id="materialNumber" value="" width="500px" />
-            </VBox>
-            <Table id="idProductsTable" items="{productModel>/}" visible="false" mode="SingleSelectMaster"
-                selectionChange="onSelectionChange">
+                <Input id="materialNumber" value="" width="30%" />
+            </l:VerticalLayout>
+            <Table id="idProductsTable"  growing="true"
+                growingThreshold="10" paste="onPaste" visible="false"  mode="SingleSelectMaster">
                 <headerToolbar>
-                    <Toolbar>
-                        <Title text="Scanned Items" />
+                    <OverflowToolbar id="otbSubheader">
+                        <Title text="Scanned Items" level="H2" />
                         <ToolbarSpacer />
-                        <Button icon=""
-                            text="Post"
-                            type="Emphasized"
-                            press="onPost" />
-                    </Toolbar>
+                        <Button id="editButton" text="Edit" type="Transparent"
+                            press="onEdit" />
+                        <Button id="saveButton" text="Post" type="Transparent"
+                            press="onPost" visible="false" />
+                        <Button id="cancelButton" text="Cancel" type="Transparent"
+                            press="onCancel" visible="false" />
+                    </OverflowToolbar>
                 </headerToolbar>
                 <columns>
                     <Column width="12em">
-                        <header>
-                            <Text text="Purchase Requisition Number" />
-                        </header>
+                        <Text text="Plant" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Requirement Quantity"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Reservation Number" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Item Number of Purchase Requisition"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Reservation Line Items" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Batch Number"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Material Code" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Quantity withdrawn"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Base UOM" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Storage Location"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Required Quantity" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Material Number"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Quantity withdrawn" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Base Unit of Measure"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Storage Location" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Record type"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Batch" />
                     </Column>
-                    <Column>
-                        <header>
-                            <Text text="Number of reservation/dependent requirements"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
-                    </Column>
-                    <Column>
-                        <header>
-                            <Text text="Plant"
-                                minScreenWidth="Desktop"
-                                demandPopin="true" />
-                        </header>
-                    </Column>
+
                 </columns>
                 <items>
-                    <ColumnListItem>
+                    <ColumnListItem vAlign="Middle">
                         <cells>
-                            <Text text="{productModel>BANFN}" />
-                            <Text text="{productModel>BDMNG}" />
-                            <Text text="{productModel>BNFPO}" />
-                            <Text text="{productModel>CHARG}" />
-                            <Text text="{productModel>ENMNG}" />
-                            <Text text="{productModel>LGORT}" />
+                            <ObjectIdentifier text="{productModel>WERKS}" />
+                            <Text text="{productModel>RSNUM}" />
+                            <Text text="{productModel>RSPOS}" />
                             <Text text="{productModel>MATNR}" />
                             <Text text="{productModel>MEINS}" />
-                            <Text text="{productModel>RSART}" />
-                            <Text text="{productModel>RSNUM}" />
-                            <Text text="{productModel>WERKS}" />
+                            <Text text="{productModel>BDMNG}" />
+                            <Text text="{productModel>ENMNG}" />
+                            <Text text="{productModel>LGORT}" />
+                            <Text text="{productModel>CHARG}" />
+
                         </cells>
                     </ColumnListItem>
                 </items>

@@ -4,8 +4,12 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
     "sap/ndc/BarcodeScanner",
-    "sap/ui/core/Element"
-], (Controller, MessageBox, MessageToast, JSONModel, BarcodeScanner, Element) => {
+    "sap/ui/core/Element",
+    'sap/base/util/deepExtend',
+    'sap/m/ColumnListItem',
+    'sap/m/Input',
+    'sap/m/Text'
+], (Controller, MessageBox, MessageToast, JSONModel, BarcodeScanner, Element, deepExtend, ColumnListItem, Input, Text) => {
     "use strict";
 
     var prefixId;
@@ -13,18 +17,18 @@ sap.ui.define([
 
     return Controller.extend("project.barcodescanner.controller.View1", {
         onInit() {
-     },
+        },
         onScan() {
             var that = this;
             BarcodeScanner.scan(
                 function (mResult) {
                     if (!mResult.cancelled) {
                         that.getView().byId("materialNumber").setValue(mResult.text);
-                       var sInput = mResult.text; 
-                       var aParts = sInput.split("|");
-                        var sID = aParts[0];      
-                        var sValue = aParts[2];   
-                        var sCode = aParts[3];    
+                        var sInput = mResult.text;
+                        var aParts = sInput.split("|");
+                        var sID = aParts[0];
+                        var sValue = aParts[2];
+                        var sCode = aParts[3];
                         var oModel = that.getOwnerComponent().getModel('main');
                         var oTable = that.getView().byId("idProductsTable");
                         var oKeys = {
@@ -36,8 +40,35 @@ sap.ui.define([
                             success: function (oData, oResponse) {
                                 var aData = [oData];
                                 var oModel = new JSONModel(aData);
-                              //  console.log(oModel);
                                 that.getView().byId("idProductsTable").setModel(oModel, "productModel")
+                                that.oReadOnlyTemplate = that.getView().byId("idProductsTable").removeItem(0);
+                                that.rebindTable(that.oReadOnlyTemplate, "Navigation");
+                                that.oEditableTemplate = new ColumnListItem({
+                                    cells: [
+                                        new Text({
+                                            text: "{productModel>WERKS}",
+                                            editable: false
+                                        }), new Text({
+                                            text: "{productModel>RSNUM}"
+                                        }), new Text({
+                                            text: "{productModel>RSPOS}"
+                                        }), new Text({
+                                            text: "{productModel>MATNR}"
+                                        }), new Text({
+                                            text: "{productModel>MEINS}"
+                                        }), new Input({
+                                            value: "{productModel>BDMNG}"
+                                        }), new Text({
+                                            text: "{productModel>ENMNG}"
+                                        }), new Input({
+                                            value: "{productModel>LGORT}"
+                                        }), new Input({
+                                            value: "{productModel>CHARG}"
+                                        }),
+
+                                    ]
+                                })
+
                             },
                             error: function (oError) {
                                 console.error("Error reading Table data:", oError);
@@ -53,11 +84,43 @@ sap.ui.define([
             );
 
         },
+        rebindTable: function (oTemplate, sKeyboardMode) {
+            var that = this;
+            that.getView().byId("idProductsTable").bindItems({
+                path: "productModel>/",
+                template: oTemplate,
+                templateShareable: true,
+                key: "WERKS"
+            });
+        },
+        onEdit() {
+            var that = this;
+            this.aProductCollection = deepExtend([], that.getView().byId("idProductsTable").getModel("productModel").getProperty("/"));
+            // console.log(that.aProductCollection);
+            this.byId("editButton").setVisible(false);
+            this.byId("saveButton").setVisible(true);
+            this.byId("cancelButton").setVisible(true);
+            this.rebindTable(this.oEditableTemplate, "Edit");
+        },
+        onCancel() {
+            var that = this;
+            this.byId("cancelButton").setVisible(false);
+            this.byId("saveButton").setVisible(false);
+            this.byId("editButton").setVisible(true);
+            that.getView().byId("idProductsTable").getModel("productModel").setProperty("/", this.aProductCollection);
+            this.rebindTable(this.oReadOnlyTemplate, "Navigation");
+
+        },
         onPost() {
+            var that = this;
             var oTable = this.byId("idProductsTable");
             var aSelectedItems = oTable.getSelectedItems();
             if (aSelectedItems.length === 0) {
+                this.byId("saveButton").setVisible(true);
+                this.byId("cancelButton").setVisible(true);
+                this.byId("editButton").setVisible(false);
                 return MessageToast.show("Please select at least one row");
+
             }
             aSelectedItems.forEach(function (oItem) {
                 var oData = oItem.getBindingContext("productModel").getObject();
@@ -75,32 +138,37 @@ sap.ui.define([
                     "RSART": oData.RSART,
                     "RSNUM": oData.RSNUM
                 };
-                var oModel = that.getOwnerComponent().getModel('main');
-                oModel.create("/YourEntitySet", oPayload, {
-                    success: function (oData) {
-                        MessageToast.show("Data Posted Successfully");
-                    },
-                    error: function (oError) {
-                        var sMessage = "An error occurred";
-                        if (oError.responseText) {
-                            try {
-                                var oResponse = JSON.parse(oError.responseText);
-                                // Standard SAP Gateway error path
-                                sMessage = oResponse.error.message.value;
-                            } catch (e) {
-                                sMessage = oError.responseText; // Fallback to raw text
-                            }
+                that.byId("saveButton").setVisible(false);
+                that.byId("cancelButton").setVisible(false);
+                that.byId("editButton").setVisible(true);
+                that.rebindTable(that.oReadOnlyTemplate, "Navigation");
+                console.log(oPayload);
+                // var oModel = this.getOwnerComponent().getModel('main');
+                // oModel.create("/YourEntitySet", oPayload, {
+                //     success: function (oData) {
+                //         MessageToast.show("Data Posted Successfully");
+                //     },
+                //     error: function (oError) {
+                //         var sMessage = "An error occurred";
+                //         if (oError.responseText) {
+                //             try {
+                //                 var oResponse = JSON.parse(oError.responseText);
+                //                 // Standard SAP Gateway error path
+                //                 sMessage = oResponse.error.message.value;
+                //             } catch (e) {
+                //                 sMessage = oError.responseText; // Fallback to raw text
+                //             }
 
-                        } else if (oError.message) {
-                            sMessage = oError.message; // Generic UI5 error
-                        }
-                        sap.m.MessageToast.show(sMessage, {
-                            duration: 5000,      // Show for 5 seconds
-                            width: "20em"        // Wider toast for long messages
-                        });
+                //         } else if (oError.message) {
+                //             sMessage = oError.message; // Generic UI5 error
+                //         }
+                //         sap.m.MessageToast.show(sMessage, {
+                //             duration: 5000,      // Show for 5 seconds
+                //             width: "20em"        // Wider toast for long messages
+                //         });
 
-                    }
-                });
+                //     }
+                // });
 
             });
 

@@ -31,15 +31,14 @@ sap.ui.define([
                         var sCode = aParts[3];
                         var oModel = that.getOwnerComponent().getModel('main');
                         var oTable = that.getView().byId("idProductsTable");
-                        var oKeys = {
-                            MATNR: "",
-                            WERKS: sCode
-                        };
-                        var sPath = "/" + oModel.createKey("Mat_Doc_InfoSet", oKeys);
-                        oModel.read(sPath, {
-                            success: function (oData, oResponse) {
-                                var aData = [oData];
-                                var oModel = new JSONModel(aData);
+
+                        oModel.read("/Mat_Doc_InfoSet", {
+                            filters: [new sap.ui.model.Filter("MATNR", "EQ", "000000261118010417"),
+                            new sap.ui.model.Filter("WERKS", "EQ", "VC01")
+                            ],
+                            success: function (oData) {
+                                console.log(oData);
+                                var oModel = new JSONModel(oData.results);
                                 that.getView().byId("idProductsTable").setModel(oModel, "productModel")
                                 that.oReadOnlyTemplate = that.getView().byId("idProductsTable").removeItem(0);
                                 that.rebindTable(that.oReadOnlyTemplate, "Navigation");
@@ -47,7 +46,6 @@ sap.ui.define([
                                     cells: [
                                         new Text({
                                             text: "{productModel>WERKS}",
-                                            editable: false
                                         }), new Text({
                                             text: "{productModel>RSNUM}"
                                         }), new Text({
@@ -68,7 +66,6 @@ sap.ui.define([
 
                                     ]
                                 })
-
                             },
                             error: function (oError) {
                                 console.error("Error reading Table data:", oError);
@@ -83,6 +80,15 @@ sap.ui.define([
                 }
             );
 
+        },
+        onSelectionChange: function (oEvent) {
+            var oTable = oEvent.getSource();
+            var aSelectedContexts = oTable.getSelectedContexts(); // Get data pointers
+            var aSelectedItems = oTable.getSelectedItems();     // Get UI elements
+
+            aSelectedContexts.forEach(function (oContext) {
+                console.log(oContext.getObject()); // The actual data record
+            });
         },
         rebindTable: function (oTemplate, sKeyboardMode) {
             var that = this;

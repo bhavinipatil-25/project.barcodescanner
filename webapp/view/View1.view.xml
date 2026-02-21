@@ -8,13 +8,13 @@
     <Page showHeader="false" enableScrolling="true" class="sapUiContentPadding"
         showNavButton="false">
         <content>
-            <l:VerticalLayout class="sapUiContentPadding" width="100%">
+            <l:VerticalLayout width="100%">
                 <Button icon="sap-icon://bar-code" text="Scan" press="onScan" />
                 <Label text="Material" />
-                <Input id="materialNumber" value="" width="30%" />
+                <Input id="materialNumber" value="" width="35%" />
             </l:VerticalLayout>
-            <Table id="idProductsTable"  growing="true"
-                growingThreshold="10" paste="onPaste" visible="false"  mode="SingleSelectMaster">
+            <Table id="idProductsTable"  growing="true" fixedLayout="true" includeItemInSelection="true"
+                growingThreshold="10" paste="onPaste" visible="false"  mode="MultiSelect" selectionChange="onSelectionChange">
                 <headerToolbar>
                     <OverflowToolbar id="otbSubheader">
                         <Title text="Scanned Items" level="H2" />
@@ -28,10 +28,10 @@
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>
-                    <Column width="12em">
+                    <Column width="6rem">
                         <Text text="Plant" />
                     </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true">
+                    <Column  minScreenWidth="Tablet" width="6rem" demandPopin="true">
                         <Text text="Reservation Number" />
                     </Column>
                     <Column minScreenWidth="Tablet" demandPopin="true">
